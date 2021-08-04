@@ -1,0 +1,16 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    propoerties:
+      hibernate:
+        dialect: org.hibernate.dialectMySQL5Dialect
+  datasource:
+    url: jdbc:mysql://root:example@localhost:3306/testdb
+  batch:
+    initialize-schema: ALWAYS
+    job:
+      enabled: false
+server:
+  port: 8081
