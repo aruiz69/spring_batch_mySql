@@ -8,6 +8,7 @@ import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.PagingQueryProvider;
 import org.springframework.batch.item.database.support.MySqlPagingQueryProvider;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -21,8 +22,9 @@ public class ItemReaderConfiguration {
 
     @Bean
     @StepScope
-    public ItemReader<Contract> itemReader(@Value("#{jobParameters['data1']}") String data1, DataSource dataSource) {
-        System.out.println("Obtenemos un parametro insertado en el JobParameters para escribirlo=====> " + data1);
+    public ItemReader<Contract> itemReader(@Value("#{jobParameters['data1']}") String data1,Map contextMap, DataSource dataSource) {
+        System.out.println("Obtenemos un parameter insertado en el JobParameters para escribirlo=====> " + data1);
+        System.out.println(contextMap);
         JdbcPagingItemReader<Contract> jdbcPagingItemReader = new JdbcPagingItemReader<>();
         jdbcPagingItemReader.setDataSource(dataSource);
         jdbcPagingItemReader.setPageSize(1000);
