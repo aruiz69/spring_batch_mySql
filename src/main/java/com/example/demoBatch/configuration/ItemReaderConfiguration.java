@@ -22,7 +22,7 @@ public class ItemReaderConfiguration {
 
     @Bean
     @StepScope
-    public ItemReader<Contract> itemReader(@Value("#{jobParameters['data1']}") String data1,Map contextMap, DataSource dataSource) {
+    public ItemReader<Contract> itemReader(@Value("#{jobParameters['data1']}") String data1,ApplicationContext context,Map contextMap, DataSource dataSource) {
         System.out.println("Obtenemos un parameter insertado en el JobParameters para escribirlo=====> " + data1);
         System.out.println(contextMap);
         JdbcPagingItemReader<Contract> jdbcPagingItemReader = new JdbcPagingItemReader<>();
@@ -49,6 +49,7 @@ public class ItemReaderConfiguration {
         jdbcPagingItemReader.setQueryProvider(queryProvider);
 
         jdbcPagingItemReader.setRowMapper((rs, i) -> {
+
             Map<String, Object> mapRet = new HashMap<>();
             while (rs.next()) {
                 //Colocar columna en base configuración de las columnas
