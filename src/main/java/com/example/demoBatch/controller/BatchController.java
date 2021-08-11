@@ -77,8 +77,8 @@ public class BatchController {
                 .toJobParameters();
 
         jobLauncher.run(job, jobParameters);
-        saveDummyData();
-        jobLauncher.run(job, jobParameters2);
+        //saveDummyData();
+        //jobLauncher.run(job, jobParameters2);
         return "batch started...";
     }
 

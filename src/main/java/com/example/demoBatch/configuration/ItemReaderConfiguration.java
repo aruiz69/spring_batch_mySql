@@ -49,11 +49,10 @@ public class ItemReaderConfiguration {
         jdbcPagingItemReader.setQueryProvider(queryProvider);
 
         jdbcPagingItemReader.setRowMapper((rs, i) -> {
-
+            int numeroDeColumnas = rs.getMetaData().getColumnCount();
             Map<String, Object> mapRet = new HashMap<>();
-            while (rs.next()) {
-                //Colocar columna en base configuración de las columnas
-                mapRet.put(rs.getString("string1"), rs.getString("string2"));
+            for(int indx = 1; indx <= numeroDeColumnas; indx++ ){
+                mapRet.put(rs.getMetaData().getColumnName(indx), rs.getObject(indx));
             }
             return mapRet;
         });

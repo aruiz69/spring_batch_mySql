@@ -27,9 +27,9 @@ public class BatchConfigurer extends DefaultBatchConfigurer {
 
     @Bean
     public Job startBatch(JobBuilderFactory jobBuilderFactory, Step step) {
-         return jobBuilderFactory.get("contractEffective")
-                 .start(step)
-                 .build();
+        return jobBuilderFactory.get("contractEffective")
+                .start(step)
+                .build();
     }
 
     @Bean
@@ -39,11 +39,14 @@ public class BatchConfigurer extends DefaultBatchConfigurer {
 
     @Bean
     public Step step1(StepBuilderFactory stepBuilderFactory,
-                          ItemReader<Contract> itemReader,
-                          ItemProcessor<Contract, ContractHistory> itemProcessor,
-                          ItemWriter<ContractHistory> itemWriter, TaskExecutor taskExecutor){
+                      //ItemReader<Contract> itemReader,
+                      ItemReader<Map<String, Object>> itemReader,
+                      //ItemProcessor<Contract, ContractHistory> itemProcessor,
+                      ItemProcessor<Map<String, Object>, ContractHistory> itemProcessor,
+                      ItemWriter<ContractHistory> itemWriter, TaskExecutor taskExecutor) {
         return stepBuilderFactory.get("step1")
-                .<Contract, ContractHistory>chunk(1000)
+                //.<Contract, ContractHistory>chunk(1000)
+                .<Map<String, Object>, ContractHistory>chunk(1000)
                 .reader(itemReader)
                 .processor(itemProcessor)
                 .writer(itemWriter)
@@ -59,8 +62,8 @@ public class BatchConfigurer extends DefaultBatchConfigurer {
     // Se puede ubicar en otra clase dedicada a verificar la configuración de los productos
     // tal que cuando se ejecute el job se pase como parámetro el nombre del producto
     // en el reader podemos recuperar el contexto completo de dicho producto
-    public Map<String,Object> contextMap(ApplicationContext context){
-        Map<String,Object> contextMap = new HashMap<>();
+    public Map<String, Object> contextMap(ApplicationContext context) {
+        Map<String, Object> contextMap = new HashMap<>();
         contextMap.put("ctx1", context);
         return contextMap;
     }
