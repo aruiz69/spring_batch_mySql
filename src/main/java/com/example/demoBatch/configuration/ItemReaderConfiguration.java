@@ -37,10 +37,13 @@ public class ItemReaderConfiguration {
 
     @Bean
     @StepScope
-    public ItemReader<Map<String, Object>> itemReaderMap(@Value("#{jobParameters['data1']}") String data1,
+    public ItemReader<Map<String, Object>> itemReaderMap(@Value("#{jobParameters['producto']}") String producto, ApplicationContext context,
                                                          DataSource dataSource) {
 
-        System.out.println("Obtenemos un parametro insertado en el JobParameters para escribirlo" + data1);
+        System.out.println("Obtenemos un parametro insertado en el JobParameters para escribirlo" + producto);
+        Map mapaProductos = (Map)context.getBean("mapProductos");
+       // ProductoBean bean = mapaProductos.get(producto);
+
         JdbcPagingItemReader<Map<String, Object>> jdbcPagingItemReader = new JdbcPagingItemReader<>();
         jdbcPagingItemReader.setDataSource(dataSource);
         jdbcPagingItemReader.setPageSize(1000);

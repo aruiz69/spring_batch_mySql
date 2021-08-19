@@ -66,14 +66,16 @@ public class BatchController {
     @GetMapping("/start-batch")
     @SneakyThrows
     public String startBatch(){
+        //Leer mapa de productos  (4) , Prestamos, Ropa , Mueble, Zapatos
+
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())
-                .addString("data1", "data1")
+                .addString("producto", "Prestamos")
                 .toJobParameters();
 
         JobParameters jobParameters2 = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())
-                .addString("data1", "data2")
+                .addString("producto", "Ropa")
                 .toJobParameters();
 
         jobLauncher.run(job, jobParameters);
