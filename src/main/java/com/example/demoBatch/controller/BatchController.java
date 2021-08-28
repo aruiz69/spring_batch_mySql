@@ -17,6 +17,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 
 @RestController
 public class BatchController {
@@ -34,7 +41,7 @@ public class BatchController {
     @GetMapping("/insert")
     public String saveDummyData(){
         List<Contract> contractList = new ArrayList<>();
-        for(int i= 0; i < 10 ; i++){
+        for(int i= 0; i < 100000 ; i++){
             Contract contract = new Contract();
             contract.setHolderName("name-"+ i);
             contract.setDuration(new Random().nextInt());
@@ -65,7 +72,7 @@ public class BatchController {
     }
     @GetMapping("/start-batch")
     @SneakyThrows
-    public String startBatch(){
+    public String startBatch() throws JobExecutionAlreadyRunningException{
         //Leer mapa de productos  (4) , Prestamos, Ropa , Mueble, Zapatos
 
         JobParameters jobParameters = new JobParametersBuilder()

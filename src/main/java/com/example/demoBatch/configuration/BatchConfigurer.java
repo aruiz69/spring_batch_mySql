@@ -21,9 +21,27 @@ import java.applet.AppletContext;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 
 @Configuration
 public class BatchConfigurer extends DefaultBatchConfigurer {
+
+    @Override
+    @Bean
+    public JobLauncher getJobLauncher() {
+        try {
+            SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
+            jobLauncher.setJobRepository(getJobRepository());
+            jobLauncher.setTaskExecutor(new SimpleAsyncTaskExecutor());
+            jobLauncher.afterPropertiesSet();
+            return jobLauncher;
+
+        } catch (Exception e) {
+            //log.error("Can't load SimpleJobLauncher with SimpleAsyncTaskExecutor: {} fallback on default", e);
+            return super.getJobLauncher();
+        }
+    }
 
     @Bean
     public Job startBatch(JobBuilderFactory jobBuilderFactory, Step step) {
@@ -39,11 +57,11 @@ public class BatchConfigurer extends DefaultBatchConfigurer {
 
     @Bean
     public Step step1(StepBuilderFactory stepBuilderFactory,
-                      //ItemReader<Contract> itemReader,
-                      ItemReader<Map<String, Object>> itemReader,
-                      //ItemProcessor<Contract, ContractHistory> itemProcessor,
-                      ItemProcessor<Map<String, Object>, ContractHistory> itemProcessor,
-                      ItemWriter<ContractHistory> itemWriter, TaskExecutor taskExecutor) {
+            //ItemReader<Contract> itemReader,
+            ItemReader<Map<String, Object>> itemReader,
+            //ItemProcessor<Contract, ContractHistory> itemProcessor,
+            ItemProcessor<Map<String, Object>, ContractHistory> itemProcessor,
+            ItemWriter<ContractHistory> itemWriter, TaskExecutor taskExecutor) {
         return stepBuilderFactory.get("step1")
                 //.<Contract, ContractHistory>chunk(1000)
                 .<Map<String, Object>, ContractHistory>chunk(1000)

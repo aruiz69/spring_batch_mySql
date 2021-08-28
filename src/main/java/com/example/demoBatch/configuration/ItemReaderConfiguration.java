@@ -41,7 +41,7 @@ public class ItemReaderConfiguration {
                                                          DataSource dataSource) {
 
         System.out.println("Obtenemos un parametro insertado en el JobParameters para escribirlo" + producto);
-        Map mapaProductos = (Map)context.getBean("mapProductos");
+       // Map mapaProductos = (Map)context.getBean("mapProductos");
        // ProductoBean bean = mapaProductos.get(producto);
 
         JdbcPagingItemReader<Map<String, Object>> jdbcPagingItemReader = new JdbcPagingItemReader<>();
