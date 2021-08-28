@@ -64,12 +64,12 @@ public class BatchConfigurer extends DefaultBatchConfigurer {
             ItemWriter<ContractHistory> itemWriter, TaskExecutor taskExecutor) {
         return stepBuilderFactory.get("step1")
                 //.<Contract, ContractHistory>chunk(1000)
-                .<Map<String, Object>, ContractHistory>chunk(1000)
+                .<Map<String, Object>, ContractHistory>chunk(100)
                 .reader(itemReader)
                 .processor(itemProcessor)
                 .writer(itemWriter)
                 .taskExecutor(taskExecutor)
-                .throttleLimit(10)
+                .throttleLimit(40)
                 .build();
 
     }

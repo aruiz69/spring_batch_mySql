@@ -41,7 +41,7 @@ public class BatchController {
     @GetMapping("/insert")
     public String saveDummyData(){
         List<Contract> contractList = new ArrayList<>();
-        for(int i= 0; i < 100000 ; i++){
+        for(int i= 0; i < 500_000; i++){
             Contract contract = new Contract();
             contract.setHolderName("name-"+ i);
             contract.setDuration(new Random().nextInt());
