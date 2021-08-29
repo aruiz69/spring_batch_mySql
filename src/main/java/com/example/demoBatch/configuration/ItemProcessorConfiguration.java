@@ -19,7 +19,7 @@ public class ItemProcessorConfiguration {
     @Bean
     public ItemProcessor<Contract, ContractHistory>  itemProcessor(){
         return contract -> {
-            log.info("processing the data "+ contract.getContractId() + " Record No : " + count.incrementAndGet());
+            //log.info("processing the data "+ contract.getContractId() + " Record No : " + count.incrementAndGet());
             ContractHistory contractHistory = new ContractHistory(
                     contract.getContractId(),
                     contract.getHolderName(),
@@ -34,7 +34,7 @@ public class ItemProcessorConfiguration {
     @Bean
     public ItemProcessor<Map<String, Object>, ContractHistory>  itemProcessorMap(){
         return map -> {
-            log.info("processing the data "+ map + " Record No : " + count.incrementAndGet());
+            //log.info("processing the data "+ map + " Record No : " + count.incrementAndGet());
             ContractHistory contractHistory = new ContractHistory();
             contractHistory.setContractId(map.get("CONTRACT_ID").toString());
             contractHistory.setDuration((Integer) map.get("DURATION"));

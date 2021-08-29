@@ -1,12 +1,13 @@
 package com.example.demoBatch.configuration;
 
-import com.example.demoBatch.entity.Contract;
 import com.example.demoBatch.entity.ContractHistory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -17,12 +18,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 
-import java.applet.AppletContext;
-import java.util.EnumMap;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalUnit;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.launch.support.SimpleJobLauncher;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Configuration
 public class BatchConfigurer extends DefaultBatchConfigurer {
@@ -57,11 +59,11 @@ public class BatchConfigurer extends DefaultBatchConfigurer {
 
     @Bean
     public Step step1(StepBuilderFactory stepBuilderFactory,
-            //ItemReader<Contract> itemReader,
-            ItemReader<Map<String, Object>> itemReader,
-            //ItemProcessor<Contract, ContractHistory> itemProcessor,
-            ItemProcessor<Map<String, Object>, ContractHistory> itemProcessor,
-            ItemWriter<ContractHistory> itemWriter, TaskExecutor taskExecutor) {
+                      //ItemReader<Contract> itemReader,
+                      ItemReader<Map<String, Object>> itemReader,
+                      //ItemProcessor<Contract, ContractHistory> itemProcessor,
+                      ItemProcessor<Map<String, Object>, ContractHistory> itemProcessor,
+                      ItemWriter<ContractHistory> itemWriter, TaskExecutor taskExecutor) {
         return stepBuilderFactory.get("step1")
                 //.<Contract, ContractHistory>chunk(1000)
                 .<Map<String, Object>, ContractHistory>chunk(100)
@@ -84,5 +86,41 @@ public class BatchConfigurer extends DefaultBatchConfigurer {
         Map<String, Object> contextMap = new HashMap<>();
         contextMap.put("ctx1", context);
         return contextMap;
+    }
+
+    @Bean
+    public ControlDeEntrega getControlEntrega() {
+        return new ControlDeEntrega();
+    }
+
+
+    static class ControlDeEntrega{
+        private static  AtomicInteger atomicInt = new AtomicInteger(0);
+        private int valorMaximoEntregasPorSegundo = 8;
+        private LocalDateTime horaInicio;
+        private boolean primeravez = true;
+
+
+        public synchronized void agregarEntrega(){
+            int numeroDeEntregas = atomicInt.incrementAndGet();
+            if(primeravez){
+                horaInicio = LocalDateTime.now();
+                primeravez = false;
+            } else {
+                if ( numeroDeEntregas % valorMaximoEntregasPorSegundo == 0){ //||
+                        //horaInicio != null && LocalDateTime.now().isAfter(horaInicio.plusSeconds(1)) ) {
+                    try {
+                        System.out.println(LocalDateTime.now());
+                        System.out.println("SLEEP------->");
+                        System.out.println("Entregados------->" + numeroDeEntregas);
+                        Thread.sleep(100);
+                        horaInicio = LocalDateTime.now();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
     }
 }
